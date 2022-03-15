@@ -1,0 +1,12 @@
+2,1				!(1,2) One point sourge or grid sourge, (0,1) compute stepest path?
+25				!Iteration number
+"observed_ini.asc"	!Initial sourges grid file
+0.215,0.0		!Range angle and minimum slope angle
+1				!Frictional (1) or viscous (2)
+0.05,50		!Coulomb friction factor and Mass to drag ratio
+800			!shBG, ShearYield, damos la tension en Pa
+300		!viscBG, viscosidad, se da como dinamica (Pa·s)
+2.5			!expBG, exponente
+1800			!densS, soil density
+4				!bingDepth, depth used in viscous velocity calculation
+
