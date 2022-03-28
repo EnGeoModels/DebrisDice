@@ -77,7 +77,7 @@ $(BIN): $(OBJ)
 GridOut_ASCII.o: GridOut_ASCII.F90
 	$(FC) $(F90FLAGS) $(OPT_FLAGS) -c GridOut_ASCII.F90 -o GridOut_ASCII.o
 
-MontecarloGlobals.mod: MontecarloGlobals.F90
+DebrisDiceGlobals.mod: DebrisDiceGlobals.F90
 	$(FC) $(F90FLAGS) $(OPT_FLAGS) -c DebrisDiceGlobals.F90 -o DebrisDiceGlobals.mod
 
 Stat.o: Stat.F90
@@ -86,7 +86,7 @@ Stat.o: Stat.F90
 MaxPath.o: MaxPath.F90
 	$(FC) $(F90FLAGS) $(OPT_FLAGS) -c MaxPath.F90 -o MaxPath.o
 
-Montecarlo.o: Montecarlo.F90
+DebrisDice.o: DebrisDice.F90
 	$(FC) $(F90FLAGS) $(OPT_FLAGS) -c DebrisDice.F90 -o DebrisDice.o
 
 Normalize.o: Normalize.F90

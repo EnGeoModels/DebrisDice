@@ -11,7 +11,7 @@ SUBROUTINE Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,
 !
 !
 !	Libreria FORTRAN, necesaria para el generador de numeros pseudoaleatorios
-	USE DFLIB
+	!USE DFLIB
 !
 !	Variables globales
 	use DebrisDiceGlobals
@@ -125,7 +125,7 @@ SUBROUTINE Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,
 			dist = dist + auxdist
 !
 !			Actualizamos los el estado
-			if (control(ix,iy) .EQ. 0) then
+			if (.NOT. control(ix,iy)) then
 				controlAng = .FALSE.
 				controlVel = .FALSE.
 			endif
