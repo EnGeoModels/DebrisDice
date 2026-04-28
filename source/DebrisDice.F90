@@ -46,11 +46,11 @@ program DebrisDice
 !
 !
 !	Fichero de topografia
-    open(100,file='topo.dat',status='old',ACTION='read',IOSTAT=istat)
+    open(100,file='topo.asc',status='old',ACTION='read',IOSTAT=istat)
 !
 !   Exception handling
     if (istat .ne. 0) then
-        write(*,*) "topo.dat cannot be opened"
+        write(*,*) "topo.asc cannot be opened"
         stop 1
     end if    
 !
@@ -109,6 +109,44 @@ program DebrisDice
 	if (itipo .EQ. 1) then
 		read(100,*) rxini,ryini		!Coordenadas UTM x e y de la celda de origen 
 		write(6,'("X:       ",F12.3," Y: ",F12.3)') rxini,ryini
+!
+!   Read an input file with the coordinates of the initiation points
+    elseif (itipo .EQ. 3) then
+!
+        fname = "ini_points.csv"
+!
+!       First pass: count number of DATA lines
+        open(101, file=fname, status='old', action='read')
+        read(101, '(A)', iostat=ios) line ! Skip header
+!
+        n = 0
+        do
+            read(101, '(A)', iostat=ios) line
+            if (ios /= 0) exit
+            n = n + 1
+        end do
+        close(101)
+!
+        print *, "Number of data rows =", n
+!
+        allocate(X_col(n), Y_col(n), L_col(n))
+!
+!       Second pass: read actual data
+        open(101, file=fname, status='old', action='read')
+        read(101, '(A)', iostat=ios) line ! Skip header
+!   
+        do i = 1, n
+            read(101, *, iostat=ios) X_col(i), Y_col(i), L_col(i)
+            if (ios /= 0) then
+                print *, "Error reading line ", i
+                stop
+            end if
+        end do
+!
+        close(101)
+!
+        read(100,*) fname			!dummy
+!
     else
 		read(100,*) fname			!Nombre del fichero de la malla de puntos de inicio	
 		write(6,'("File: ",A20)') fname
@@ -169,7 +207,26 @@ program DebrisDice
 !		Las coordenadas del nodo origen estan en referencia dextrogira
 !		pasamos a levogira (las mallas ARCVIEW tienen y=1 arriba e y=my abajo, hay que invertir
 		iyini = my - iyini + 1
-	else
+!
+    elseif (itipo .EQ. 3) then
+!
+!		Comprobamos que las coordenadas UTM esten dentro de la malla
+		rmaxUTMx = xcorner + DBLE(mx) * dx
+		rmaxUTMy = ycorner + DBLE(my) * dy
+!
+        do i = 1,n
+!
+            rxini = X_col(i)
+            ryini = Y_col(i)
+!
+            if (rxini .GE. rmaxUTMx .OR. ryini .GE. rmaxUTMy) then
+			    write(6,'("ERROR: UTM out of grid domain",/)')
+			    goto 1000
+            endif
+!
+        enddo
+!    
+    else
 !
 !		Malla de sources
 		open(100,file=fname,status='old')
@@ -249,7 +306,28 @@ program DebrisDice
 !
 !		Un solo source
 		write(6,*) 'One source.'
-		Call Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo)	
+		Call Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo,1)	
+!
+    elseif (itipo .EQ. 3) then
+!        
+        do i = 1,n
+!
+            rxini = X_col(i)
+            ryini = Y_col(i)
+!
+!		    Convertimos a coordenadas UTM a numero de celda
+		    ixini = IDINT((rxini - xcorner) / dx)
+		    iyini = IDINT((ryini - ycorner) / dy)
+!
+!		    Las coordenadas del nodo origen estan en referencia dextrogira
+!		    pasamos a levogira (las mallas ARCVIEW tienen y=1 arriba e y=my abajo, hay que invertir
+		    iyini = my - iyini + 1
+!
+            write(6,'("Done:     ",F12.3)') (DBLE(i) / DBLE(n) * 100.d0)			
+!
+			Call Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo,i)	
+!
+        enddo        
 !
     else
 !
@@ -267,7 +345,7 @@ program DebrisDice
 !
 					ixini = i
 					iyini = j
-					Call Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo)	
+					Call Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo,1)	
 				endif
 !
 			enddo
@@ -429,6 +507,9 @@ program DebrisDice
 	DEALLOCATE(control)				!Malla de control de borde y sumideros
 	DEALLOCATE(isources)			!Malla de puntos de inicio
 	DEALLOCATE(velocidades)			!Malla de velocidades
+	DEALLOCATE(X_col)			    !Initiation coordinates
+	DEALLOCATE(Y_col)			    !Initiation coordinates
+	DEALLOCATE(L_col)			    !Initiation coordinates
 !
 !
 end program DebrisDice

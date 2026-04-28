@@ -45,12 +45,13 @@
 				<Tool Name="VFPostBuildEventTool"/>
 				<Tool Name="VFManifestTool" SuppressStartupBanner="true"/></Configuration></Configurations>
 	<Files>
-		<Filter Name="Header Files" Filter="fi;fd">
-		<File RelativePath=".\source\DebrisDiceGlobals.F90"/></Filter>
 		<Filter Name="Data">
+		<File RelativePath=".\data\ini_points.csv"/>
 		<File RelativePath=".\data\input.dat"/>
 		<File RelativePath=".\data\observed_ini.asc"/>
-		<File RelativePath=".\data\topo.dat"/></Filter>
+		<File RelativePath=".\data\topo.asc"/></Filter>
+		<Filter Name="Header Files" Filter="fi;fd">
+		<File RelativePath=".\source\DebrisDiceGlobals.F90"/></Filter>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
 		<File RelativePath=".\source\DebrisDice.F90"/>
 		<File RelativePath=".\source\GridOut_ASCII.F90"/>

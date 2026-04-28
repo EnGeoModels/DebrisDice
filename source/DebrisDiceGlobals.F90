@@ -22,6 +22,7 @@ module DebrisDiceGlobals
 	INTEGER :: iFricType		!Frictional(1) or viscous(2)
 	INTEGER :: mx			!Numero nodos X
 	INTEGER :: my			!Numero nodos Y
+    INTEGER :: ios          !Unit state
 !
 !
 !   Booleanas
@@ -60,11 +61,17 @@ module DebrisDiceGlobals
 !   Reales
 	REAL*8,   DIMENSION(:,:,:), ALLOCATABLE :: q                !Matriz donde se almacenan las variables
 	REAL*8,   DIMENSION(5)                  :: dtv
+    REAL*8,   DIMENSION(:), ALLOCATABLE     :: X_col
+    REAL*8,   DIMENSION(:), ALLOCATABLE     :: Y_col
+    REAL*8,   DIMENSION(:), ALLOCATABLE     :: L_col
 !
 !
 !   Texto
 	CHARACTER*14 dummy
 	CHARACTER*30 fname
+    CHARACTER*256 line
 !
 !
-end module DebrisDiceGlobals
+    end module DebrisDiceGlobals
+    
+    

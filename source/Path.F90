@@ -7,7 +7,7 @@
 !  PURPOSE:  Compute path of the flux.
 !
 !****************************************************************************
-SUBROUTINE Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo)
+SUBROUTINE Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,topo,index_col)
 !
 !
 !	Libreria FORTRAN, necesaria para el generador de numeros pseudoaleatorios
@@ -141,9 +141,16 @@ SUBROUTINE Path(ixini,iyini,acumulado,acumuladoVel,velocidades,control,topostat,
 !
 !			La caida debe ser mayor que l'abast
 !			if (angleAbast .LT. abast) EXIT LOOP_PATH
-			if (angleAbast .LT. abast) then
-				controlAng = .FALSE.
-			endif
+			if (itipo .EQ. 3) then
+                if (L_col(index_col) .LT. dist) then
+                    controlAng = .FALSE.
+                endif                
+            else
+                if (angleAbast .LT. abast) then
+                    controlAng = .FALSE.
+                endif
+            endif
+            
 !
 !			Calculo de velocidades
 			if (controlVel) then
